@@ -1,0 +1,25 @@
+{
+    "codes": [
+        {
+            "code": "IYGXI8M8",
+            "expiration": "2025-02-19T12:31:50.289574",
+            "created_by": 5277718388,
+            "used": true
+        },
+        {
+            "code": "HBVNKDU9",
+            "expiration": "2025-02-19T12:32:13.674987",
+            "created_by": 5277718388,
+            "used": false
+        },
+        {
+            "code": "LWCFGZ1M",
+            "expiration": "2025-02-19T12:32:16.343145",
+            "created_by": 5277718388,
+            "used": false
+        }
+    ],
+    "authorized_users": [
+        5277718388
+    ]
+}
