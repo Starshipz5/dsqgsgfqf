@@ -1,4 +1,4 @@
-﻿from handlers.admin_features import AdminFeatures
+from handlers.admin_features import AdminFeatures
 from modules.access_manager import AccessManager
 import json
 import logging
@@ -444,12 +444,16 @@ async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def show_admin_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Affiche le menu d'administration"""
+    is_enabled = access_manager.is_access_code_enabled()
+    status_text = "✅ Activé" if is_enabled else "❌ Désactivé"
+
     keyboard = [
         [InlineKeyboardButton("➕ Ajouter une catégorie", callback_data="add_category")],
         [InlineKeyboardButton("➕ Ajouter un produit", callback_data="add_product")],
         [InlineKeyboardButton("❌ Supprimer une catégorie", callback_data="delete_category")],
         [InlineKeyboardButton("❌ Supprimer un produit", callback_data="delete_product")],
         [InlineKeyboardButton("✏️ Modifier un produit", callback_data="edit_product")],
+        [InlineKeyboardButton(f"🔒 Code d'accès: {status_text}", callback_data="toggle_access_code")],
         [InlineKeyboardButton("📊 Statistiques", callback_data="show_stats")],
         [InlineKeyboardButton("📞 Modifier le contact", callback_data="edit_contact")],
         [InlineKeyboardButton("🛒 Modifier bouton Commander", callback_data="edit_order_button")],
@@ -1233,6 +1237,20 @@ async def handle_normal_buttons(update: Update, context: ContextTypes.DEFAULT_TY
 
         except Exception as e:
             print(f"Erreur lors de la suppression du produit: {e}")
+            return await show_admin_menu(update, context)
+
+    elif query.data == "toggle_access_code":
+            if str(update.effective_user.id) not in ADMIN_IDS:
+                await query.answer("❌ Vous n'êtes pas autorisé à modifier ce paramètre.")
+                return CHOOSING
+            
+            is_enabled = access_manager.toggle_access_code()
+            status = "activé ✅" if is_enabled else "désactivé ❌"
+        
+            # Afficher un message temporaire
+            await query.answer(f"Le système de code d'accès a été {status}")
+        
+            # Rafraîchir le menu admin
             return await show_admin_menu(update, context)
 
     elif query.data == "edit_order_button":
